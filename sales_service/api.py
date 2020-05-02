@@ -11,8 +11,13 @@ router = APIRouter()
 
 @router.post("/sellers/", status_code=status.HTTP_201_CREATED, response_model=SellerDetail)
 async def sellers_create(seller: SellerCreate):
-    seller_instance = Seller(**seller.dict())
+    if session.query(Seller).filter(Seller.email == seller.email).first():
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="This email is already registered")
 
+    if session.query(Seller).filter(Seller.cpf == seller.cpf).first():
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="This CPF is already registered")
+
+    seller_instance = Seller(**seller.dict())
     session.add(seller_instance)
     session.commit()
     session.refresh(seller_instance)

@@ -5,7 +5,7 @@ from fastapi import status
 from .factories import SellerFactory
 
 
-def test_sellers_create(client, seller_create_payload):
+def test_sellers_create_successfully(client, seller_create_payload):
     response = client.post("/sellers/", json=seller_create_payload)
     response_data = response.json()
 
@@ -17,7 +17,29 @@ def test_sellers_create(client, seller_create_payload):
     assert "password" not in response_data
 
 
-def test_sellers_list(client):
+def test_sellers_create_fails_with_registered_email(client, seller_create_payload):
+    seller = SellerFactory()
+    seller_create_payload["email"] = seller.email
+
+    response = client.post("/sellers/", json=seller_create_payload)
+    response_data = response.json()
+
+    assert response.status_code == status.HTTP_409_CONFLICT
+    assert response_data["detail"] == "This email is already registered"
+
+
+def test_sellers_create_fails_with_registered_cpf(client, seller_create_payload):
+    seller = SellerFactory()
+    seller_create_payload["cpf"] = seller.cpf
+
+    response = client.post("/sellers/", json=seller_create_payload)
+    response_data = response.json()
+
+    assert response.status_code == status.HTTP_409_CONFLICT
+    assert response_data["detail"] == "This CPF is already registered"
+
+
+def test_sellers_list_successfully(client):
     seller = SellerFactory()
 
     response = client.get("/sellers/")
@@ -28,7 +50,7 @@ def test_sellers_list(client):
     assert response_data[0]["id"] == seller.id
 
 
-def test_sellers_authentication(client):
+def test_sellers_authentication_successfully(client):
     seller = SellerFactory(password="test123")
 
     response = client.post("/sellers/authentication/", json={"email": seller.email, "password": "test123"})
