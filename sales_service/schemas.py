@@ -18,3 +18,8 @@ class SellerCreate(BaseModel):
     cpf: str
     email: str
     password: str
+
+
+class SellerAuth(BaseModel):
+    email: str
+    password: str

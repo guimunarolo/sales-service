@@ -26,3 +26,31 @@ def test_sellers_list(client):
     assert response.status_code == status.HTTP_200_OK
     assert len(response_data) == 1
     assert response_data[0]["id"] == seller.id
+
+
+def test_sellers_authentication(client):
+    seller = SellerFactory(password="test123")
+
+    response = client.post("/sellers/authentication/", json={"email": seller.email, "password": "test123"})
+    response_data = response.json()
+
+    assert response.status_code == status.HTTP_200_OK
+    assert response_data["id"] == seller.id
+
+
+def test_sellers_authentication_with_wrong_password(client):
+    seller = SellerFactory(password="test123")
+
+    response = client.post("/sellers/authentication/", json={"email": seller.email, "password": "wrong123"})
+
+    assert response.status_code == status.HTTP_401_UNAUTHORIZED
+
+
+def test_sellers_authentication_with_unnexistent_email(client):
+    SellerFactory(email="test.123@gmail.com", password="test123")
+
+    response = client.post(
+        "/sellers/authentication/", json={"email": "wrong@gmail.com", "password": "test123"}
+    )
+
+    assert response.status_code == status.HTTP_401_UNAUTHORIZED
