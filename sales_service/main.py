@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 
+from .api import router as api_router
 from .db import database, engine, metadata
 
 app = FastAPI()
@@ -15,9 +16,5 @@ async def shutdown():
     await database.disconnect()
 
 
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
-
-
 metadata.create_all(engine)
+app.include_router(api_router)
