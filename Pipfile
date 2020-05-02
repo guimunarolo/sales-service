@@ -1,0 +1,31 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+aiosqlite = "*"
+databases = "*"
+fastapi = "*"
+requests = "*"
+sqlalchemy = "*"
+passlib = "*"
+prettyconf = "*"
+pydantic = "*"
+uvicorn = "*"
+
+[dev-packages]
+codecov = "*"
+ipdb = "*"
+ipython = "*"
+responses = "*"
+pre-commit = "*"
+pytest = "*"
+pytest-cov = "*"
+pytest-deadfixtures = "*"
+pytest-env = "*"
+pytest-freezegun = "*"
+pytest-randomly = "*"
+
+[requires]
+python_version = "3.8.2"
