@@ -4,11 +4,10 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-aiosqlite = "*"
-databases = "*"
 fastapi = "*"
 requests = "*"
 sqlalchemy = "*"
+sqlalchemy-utils = "*"
 passlib = "*"
 prettyconf = "*"
 pydantic = "*"
@@ -16,6 +15,7 @@ uvicorn = "*"
 
 [dev-packages]
 codecov = "*"
+factory_boy = "*"
 ipdb = "*"
 ipython = "*"
 responses = "*"
@@ -24,7 +24,6 @@ pytest = "*"
 pytest-cov = "*"
 pytest-deadfixtures = "*"
 pytest-env = "*"
-pytest-freezegun = "*"
 pytest-randomly = "*"
 
 [requires]

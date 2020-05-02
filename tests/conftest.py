@@ -1,12 +1,12 @@
 import pytest
 from fastapi.testclient import TestClient
-from sales_service.db import engine, metadata
+from sales_service.db import Base, engine
 from sales_service.main import app
 
 
 @app.on_event("shutdown")
 async def shutdown():
-    metadata.drop_all(engine)
+    Base.metadata.drop_all(engine)
 
 
 @pytest.fixture
