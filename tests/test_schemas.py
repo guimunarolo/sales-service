@@ -1,6 +1,14 @@
+import random
+from decimal import Decimal
+
 import pytest
 from pydantic import ValidationError
 from sales_service.schemas import ORDER_SELF_APPROVED_SELLERS, OrderCreate, SellerCreate
+
+
+def random_decimal(nmin, nmax, formatation="{:.2f}"):
+    value = Decimal(random.uniform(nmin, nmax))
+    return formatation.format(value) if formatation else value
 
 
 @pytest.mark.parametrize("invalid_cpf", ("459452147888", "459.452.147.888", "4544.452.147.88", "0123456789"))
@@ -46,14 +54,40 @@ def test_order_create_remove_cpf_formatation(order_create_payload):
     assert order_data.cpf == "78855566688"
 
 
-def test_order_create_to_db_with_common_seller(order_create_payload):
+def test_order_create_to_db_formatation(order_create_payload):
     order = OrderCreate(**order_create_payload)
+    order_db_data = order.to_db()
 
-    assert order.to_db() == {"status": "Em validação", **order.dict()}
+    assert order_db_data["code"] == order_create_payload["code"]
+    assert order_db_data["timestamp"].isoformat() == order_create_payload["timestamp"]
+    assert order_db_data["cpf"] == order_create_payload["cpf"]
+    assert str(order_db_data["amount"]) == str(order_create_payload["amount"])
+    assert "status" in order_db_data
+    assert "cashback_percentage" in order_db_data
 
 
-def test_order_create_to_db_with_self_approved_seller(order_create_payload):
+def test_order_create_to_db_status_with_common_seller(order_create_payload):
+    order = OrderCreate(**order_create_payload)
+    order_db_data = order.to_db()
+
+    assert order_db_data["status"] == "Em validação"
+
+
+def test_order_create_to_db_status_with_self_approved_seller(order_create_payload):
     order_create_payload["cpf"] = ORDER_SELF_APPROVED_SELLERS[0]
     order = OrderCreate(**order_create_payload)
+    order_db_data = order.to_db()
 
-    assert order.to_db() == {"status": "Aprovado", **order.dict()}
+    assert order_db_data["status"] == "Aprovado"
+
+
+@pytest.mark.parametrize(
+    "amount, expected_percentage",
+    ((random_decimal(0, 999), 10), (random_decimal(1000, 1499), 15), (random_decimal(1500, 9999), 20),),
+)
+def test_order_create_to_db_cashback_percentage(amount, expected_percentage, order_create_payload):
+    order_create_payload["amount"] = amount
+    order = OrderCreate(**order_create_payload)
+    order_db_data = order.to_db()
+
+    assert order_db_data["cashback_percentage"] == expected_percentage

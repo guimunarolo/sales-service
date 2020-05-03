@@ -6,6 +6,11 @@ import uuid
 from pydantic import BaseModel, constr, validator
 
 ORDER_SELF_APPROVED_SELLERS = ("15350946056",)
+ORDER_CASHBACK_MAPPING = {
+    1500: 0.20,
+    1000: 0.15,
+    0: 0.10,
+}
 
 
 class SellerDetail(BaseModel):
@@ -52,6 +57,7 @@ class OrderDetail(BaseModel):
     timestamp: datetime.datetime
     cpf: str
     status: str
+    cashback_percentage: int
 
     class Config:
         orm_mode = True
@@ -74,7 +80,15 @@ class OrderCreate(BaseModel):
     def _resolve_status(self):
         return "Aprovado" if self.cpf in ORDER_SELF_APPROVED_SELLERS else "Em validação"
 
+    def _resolve_cashback_percentage(self):
+        for cb_amount, cb_percentage in ORDER_CASHBACK_MAPPING.items():
+            if self.amount >= cb_amount:
+                return cb_percentage
+
     def to_db(self):
-        data = self.dict()
-        data["status"] = self._resolve_status()
-        return data
+        cashback_percentage = self._resolve_cashback_percentage()
+        return {
+            **self.dict(),
+            "status": self._resolve_status(),
+            "cashback_percentage": int(cashback_percentage * 100),
+        }

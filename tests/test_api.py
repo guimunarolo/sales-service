@@ -88,7 +88,8 @@ def test_orders_create_successfully(client, order_create_payload):
     assert response_data["amount"] == order_create_payload["amount"]
     assert response_data["timestamp"] == order_create_payload["timestamp"]
     assert response_data["cpf"] == order_create_payload["cpf"]
-    assert response_data["status"] == "Em validação"
+    assert "status" in response_data
+    assert "cashback_percentage" in response_data
 
 
 def test_orders_list_successfully(client):

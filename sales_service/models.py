@@ -1,6 +1,6 @@
 import uuid
 
-from sqlalchemy import Column, DateTime, Float, String
+from sqlalchemy import Column, DateTime, Float, Integer, String
 from sqlalchemy_utils.types import PasswordType, UUIDType
 
 from .db import Base
@@ -29,3 +29,4 @@ class Order(Base):
     amount = Column(Float(asdecimal=True))
     timestamp = Column(DateTime())
     status = Column(String(255), default="")
+    cashback_percentage = Column(Integer(), default=0)
