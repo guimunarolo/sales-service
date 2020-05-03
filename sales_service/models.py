@@ -28,3 +28,4 @@ class Order(Base):
     code = Column(String(255))
     amount = Column(Float(asdecimal=True))
     timestamp = Column(DateTime())
+    status = Column(String(255), default="")

@@ -41,7 +41,7 @@ async def sellers_authentication(auth: SellerAuth):
 
 @router.post("/orders/", status_code=status.HTTP_201_CREATED, response_model=OrderDetail)
 async def orders_create(order: OrderCreate):
-    order_instance = Order(**order.dict())
+    order_instance = Order(**order.to_db())
     session.add(order_instance)
     session.commit()
     session.refresh(order_instance)
