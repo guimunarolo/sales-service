@@ -3,7 +3,9 @@
 [![CircleCI](https://circleci.com/gh/guimunarolo/sales-service.svg?style=shield)](https://circleci.com/gh/guimunarolo/sales-service)
 [![codecov](https://codecov.io/gh/guimunarolo/sales-service/branch/master/graph/badge.svg)](https://codecov.io/gh/guimunarolo/sales-service)
 
-Serviço simples feito em Fast API para controle de vendas com lógica de cashback.
+Serviço simples feito em [Fast API](https://github.com/tiangolo/fastapi) para controle de vendas com lógica de cashback.
+
+Estilisação de código por [Black](https://github.com/psf/black).
 
 
 ## Instalação
