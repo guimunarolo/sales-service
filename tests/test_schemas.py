@@ -64,6 +64,7 @@ def test_order_create_to_db_formatation(order_create_payload):
     assert str(order_db_data["amount"]) == str(order_create_payload["amount"])
     assert "status" in order_db_data
     assert "cashback_percentage" in order_db_data
+    assert "cashback_amount" in order_db_data
 
 
 def test_order_create_to_db_status_with_common_seller(order_create_payload):
@@ -85,9 +86,12 @@ def test_order_create_to_db_status_with_self_approved_seller(order_create_payloa
     "amount, expected_percentage",
     ((random_decimal(0, 999), 10), (random_decimal(1000, 1499), 15), (random_decimal(1500, 9999), 20),),
 )
-def test_order_create_to_db_cashback_percentage(amount, expected_percentage, order_create_payload):
+def test_order_create_to_db_cashback_calculation(amount, expected_percentage, order_create_payload):
     order_create_payload["amount"] = amount
     order = OrderCreate(**order_create_payload)
     order_db_data = order.to_db()
 
+    expected_amount = "{:.2f}".format(expected_percentage * Decimal(amount) / 100)
+
     assert order_db_data["cashback_percentage"] == expected_percentage
+    assert order_db_data["cashback_amount"] == expected_amount

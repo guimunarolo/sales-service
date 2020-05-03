@@ -90,6 +90,7 @@ def test_orders_create_successfully(client, order_create_payload):
     assert response_data["cpf"] == order_create_payload["cpf"]
     assert "status" in response_data
     assert "cashback_percentage" in response_data
+    assert "cashback_amount" in response_data
 
 
 def test_orders_list_successfully(client):

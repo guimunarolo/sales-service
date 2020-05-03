@@ -30,3 +30,4 @@ class Order(Base):
     timestamp = Column(DateTime())
     status = Column(String(255), default="")
     cashback_percentage = Column(Integer(), default=0)
+    cashback_amount = Column(Float(asdecimal=True), default=0)

@@ -58,6 +58,7 @@ class OrderDetail(BaseModel):
     cpf: str
     status: str
     cashback_percentage: int
+    cashback_amount: decimal.Decimal
 
     class Config:
         orm_mode = True
@@ -87,8 +88,10 @@ class OrderCreate(BaseModel):
 
     def to_db(self):
         cashback_percentage = self._resolve_cashback_percentage()
+        cashback_amount = self.amount * decimal.Decimal(cashback_percentage)
         return {
             **self.dict(),
             "status": self._resolve_status(),
             "cashback_percentage": int(cashback_percentage * 100),
+            "cashback_amount": f"{cashback_amount:.2f}",
         }
