@@ -1,14 +1,8 @@
-import random
 from decimal import Decimal
 
 import pytest
 from pydantic import ValidationError
 from sales_service.schemas import ORDER_SELF_APPROVED_SELLERS, OrderCreate, SellerCreate
-
-
-def random_decimal(nmin, nmax, formatation="{:.2f}"):
-    value = Decimal(random.uniform(nmin, nmax))
-    return formatation.format(value) if formatation else value
 
 
 @pytest.mark.parametrize("invalid_cpf", ("459452147888", "459.452.147.888", "4544.452.147.88", "0123456789"))
@@ -84,7 +78,7 @@ def test_order_create_to_db_status_with_self_approved_seller(order_create_payloa
 
 @pytest.mark.parametrize(
     "amount, expected_percentage",
-    ((random_decimal(0, 999), 10), (random_decimal(1000, 1499), 15), (random_decimal(1500, 9999), 20),),
+    (("10.00", 10), ("999.00", 10), ("1000.00", 15), ("1499.00", 15), ("1500", 20), ("9999999", 20),),
 )
 def test_order_create_to_db_cashback_calculation(amount, expected_percentage, order_create_payload):
     order_create_payload["amount"] = amount
