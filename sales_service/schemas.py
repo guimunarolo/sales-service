@@ -1,7 +1,7 @@
 import re
 import uuid
 
-from pydantic import BaseModel, validator
+from pydantic import BaseModel, constr, validator
 
 
 class SellerDetail(BaseModel):
@@ -15,10 +15,10 @@ class SellerDetail(BaseModel):
 
 
 class SellerCreate(BaseModel):
-    name: str
-    cpf: str
-    email: str
-    password: str
+    name: constr(max_length=255)
+    cpf: constr(max_length=14)
+    email: constr(max_length=255)
+    password: constr(max_length=24)
 
     @validator("cpf")
     def cpf_number_sanitization(cls, value):
