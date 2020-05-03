@@ -2,9 +2,10 @@ from typing import List
 
 from fastapi import APIRouter, HTTPException, status
 
+from .clients import CashbackClient
 from .db import session
 from .models import Order, Seller
-from .schemas import OrderCreate, OrderDetail, SellerAuth, SellerCreate, SellerDetail
+from .schemas import CashbackDetail, OrderCreate, OrderDetail, SellerAuth, SellerCreate, SellerDetail
 
 router = APIRouter()
 
@@ -52,3 +53,18 @@ async def orders_create(order: OrderCreate):
 @router.get("/orders/", status_code=status.HTTP_200_OK, response_model=List[OrderDetail])
 async def orders_list():
     return session.query(Order).all()
+
+
+@router.get("/cashback/", response_model=CashbackDetail)
+async def cashback_detail(cpf: str):
+    async with CashbackClient() as client:
+        legacy_cashback_total = await client.get_cashback(cpf)
+
+    seller_orders = session.query(Order).filter(Order.cpf == cpf).all()
+    cashback_total = sum([so.cashback_amount for so in seller_orders])
+
+    return {
+        "legacy_amount": legacy_cashback_total,
+        "orders_amount": cashback_total,
+        "total": cashback_total + legacy_cashback_total,
+    }

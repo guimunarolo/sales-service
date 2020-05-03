@@ -1,5 +1,6 @@
 import uuid
 
+import asynctest
 from fastapi import status
 
 from .factories import OrderFactory, SellerFactory
@@ -102,3 +103,18 @@ def test_orders_list_successfully(client):
     assert response.status_code == status.HTTP_200_OK
     assert len(response_data) == 1
     assert response_data[0]["id"] == order.id
+
+
+@asynctest.patch("sales_service.clients.CashbackClient.get_cashback")
+def test_cashback_successfully(get_cashback_mock, client):
+    get_cashback_mock.return_value = 50
+    OrderFactory(cashback_amount=150, cpf="12345678910")
+    OrderFactory(cashback_amount=150, cpf="12345678910")
+
+    response = client.get("/cashback/", params={"cpf": "12345678910"})
+    response_data = response.json()
+
+    assert response.status_code == status.HTTP_200_OK
+    assert response_data["legacy_amount"] == 50.00
+    assert response_data["orders_amount"] == 300.00
+    assert response_data["total"] == 350.00

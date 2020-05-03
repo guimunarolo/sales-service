@@ -95,3 +95,9 @@ class OrderCreate(BaseModel):
             "cashback_percentage": int(cashback_percentage * 100),
             "cashback_amount": f"{cashback_amount:.2f}",
         }
+
+
+class CashbackDetail(BaseModel):
+    legacy_amount: decimal.Decimal
+    orders_amount: decimal.Decimal
+    total: decimal.Decimal
