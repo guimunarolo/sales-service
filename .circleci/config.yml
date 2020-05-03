@@ -7,6 +7,10 @@ jobs:
         docker:
             - image: circleci/python:3.8.2-buster
 
+              # Global Variables
+              environment:
+                  EXTERNAL_API_TOKEN: TEST123
+
         working_directory: ~/repo
         steps:
             - checkout
