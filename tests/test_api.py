@@ -2,7 +2,7 @@ import uuid
 
 from fastapi import status
 
-from .factories import SellerFactory
+from .factories import OrderFactory, SellerFactory
 
 
 def test_sellers_create_successfully(client, seller_create_payload):
@@ -76,3 +76,26 @@ def test_sellers_authentication_with_unnexistent_email(client):
     )
 
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
+
+
+def test_orders_create_successfully(client, order_create_payload):
+    response = client.post("/orders/", json=order_create_payload)
+    response_data = response.json()
+
+    assert response.status_code == status.HTTP_201_CREATED
+    assert uuid.UUID(response_data["id"])
+    assert response_data["code"] == order_create_payload["code"]
+    assert response_data["amount"] == order_create_payload["amount"]
+    assert response_data["timestamp"] == order_create_payload["timestamp"]
+    assert response_data["cpf"] == order_create_payload["cpf"]
+
+
+def test_orders_list_successfully(client):
+    order = OrderFactory()
+
+    response = client.get("/orders/")
+    response_data = response.json()
+
+    assert response.status_code == status.HTTP_200_OK
+    assert len(response_data) == 1
+    assert response_data[0]["id"] == order.id

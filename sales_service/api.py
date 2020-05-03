@@ -3,8 +3,8 @@ from typing import List
 from fastapi import APIRouter, HTTPException, status
 
 from .db import session
-from .models import Seller
-from .schemas import SellerAuth, SellerCreate, SellerDetail
+from .models import Order, Seller
+from .schemas import OrderCreate, OrderDetail, SellerAuth, SellerCreate, SellerDetail
 
 router = APIRouter()
 
@@ -37,3 +37,18 @@ async def sellers_authentication(auth: SellerAuth):
         return seller
 
     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+
+
+@router.post("/orders/", status_code=status.HTTP_201_CREATED, response_model=OrderDetail)
+async def orders_create(order: OrderCreate):
+    order_instance = Order(**order.dict())
+    session.add(order_instance)
+    session.commit()
+    session.refresh(order_instance)
+
+    return order_instance
+
+
+@router.get("/orders/", status_code=status.HTTP_200_OK, response_model=List[OrderDetail])
+async def orders_list():
+    return session.query(Order).all()

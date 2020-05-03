@@ -1,6 +1,6 @@
 import uuid
 
-from sqlalchemy import Column, String
+from sqlalchemy import Column, DateTime, Float, String
 from sqlalchemy_utils.types import PasswordType, UUIDType
 
 from .db import Base
@@ -18,3 +18,13 @@ class Seller(Base):
     cpf = Column(String(11), unique=True, index=True)
     email = Column(String(255), unique=True, index=True)
     password = Column(PasswordType(schemes=["pbkdf2_sha512", "md5_crypt"], deprecated=["md5_crypt"]))
+
+
+class Order(Base):
+    __tablename__ = "orders"
+
+    id = Column(UUIDType(binary=False), primary_key=True, default=create_uuid)
+    cpf = Column(String(11), index=True)
+    code = Column(String(255))
+    amount = Column(Float(asdecimal=True))
+    timestamp = Column(DateTime())

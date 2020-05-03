@@ -23,3 +23,13 @@ def seller_create_payload():
         "cpf": "39824458877",
         "password": "teste123",
     }
+
+
+@pytest.fixture
+def order_create_payload():
+    return {
+        "code": "123ABC",
+        "amount": 1504.47,
+        "timestamp": "2020-12-30T12:03:00",
+        "cpf": "39824458877",
+    }

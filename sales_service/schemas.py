@@ -1,3 +1,5 @@
+import datetime
+import decimal
 import re
 import uuid
 
@@ -39,3 +41,21 @@ class SellerCreate(BaseModel):
 class SellerAuth(BaseModel):
     email: str
     password: str
+
+
+class OrderDetail(BaseModel):
+    id: uuid.UUID
+    code: str
+    amount: decimal.Decimal
+    timestamp: datetime.datetime
+    cpf: str
+
+    class Config:
+        orm_mode = True
+
+
+class OrderCreate(BaseModel):
+    code: constr(max_length=255)
+    amount: decimal.Decimal
+    timestamp: datetime.datetime
+    cpf: constr(max_length=14)
