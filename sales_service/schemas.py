@@ -3,7 +3,7 @@ import decimal
 import re
 import uuid
 
-from pydantic import BaseModel, constr, validator
+from pydantic import BaseModel, Field, validator
 
 ORDER_SELF_APPROVED_SELLERS = ("15350946056",)
 ORDER_CASHBACK_MAPPING = {
@@ -24,10 +24,12 @@ class SellerDetail(BaseModel):
 
 
 class SellerCreate(BaseModel):
-    name: constr(max_length=255)
-    cpf: constr(max_length=14)
-    email: constr(max_length=255)
-    password: constr(max_length=24)
+    name: str = Field(None, max_length=255)
+    cpf: str = Field(None, min_length=11, max_length=14, description="Only digits")
+    email: str = Field(None, max_length=255, description="Valid email")
+    password: str = Field(
+        None, min_length=6, max_length=16, description="A text value with length between 6 and 16 characters"
+    )
 
     @validator("cpf")
     def cpf_number_sanitization(cls, value):
@@ -65,10 +67,10 @@ class OrderDetail(BaseModel):
 
 
 class OrderCreate(BaseModel):
-    code: constr(max_length=255)
+    code: str = Field(None, min_length=1, max_length=255, description="Order code")
     amount: decimal.Decimal
     timestamp: datetime.datetime
-    cpf: constr(max_length=14)
+    cpf: str = Field(None, min_length=11, max_length=14, description="Only digits")
 
     @validator("cpf")
     def cpf_number_sanitization(cls, value):
