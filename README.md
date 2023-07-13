@@ -3,14 +3,12 @@
 [![CircleCI](https://circleci.com/gh/guimunarolo/sales-service.svg?style=shield)](https://circleci.com/gh/guimunarolo/sales-service)
 [![codecov](https://codecov.io/gh/guimunarolo/sales-service/branch/master/graph/badge.svg)](https://codecov.io/gh/guimunarolo/sales-service)
 
-Serviço simples feito em [Fast API](https://github.com/tiangolo/fastapi) para controle de vendas com lógica de cashback.
-
-Estilisação de código por [Black](https://github.com/psf/black).
+Simple service using [Fast API](https://github.com/tiangolo/fastapi) to control sales with cashback.
 
 
-## Instalação
+## How to install
 
-Com o `pipenv` já instalado e seu ambiente já iniciado:
+With `pipenv` already installed just run:
 
 ```bash
 $ pipenv install --dev
@@ -18,25 +16,25 @@ $ cp local.env .env
 ```
 
 
-## Iniciando o Serviço
+## How to run
 
-Basta rodar o comando abaixo substituindo o valor do token:
+Set the API Token and run it with:
 
 ```bash
 $ EXTERNAL_API_TOKEN={token} make run
 ```
 
-> O valor do token pode ser substituido no arquivo .env
+> You can also use the .env to set the Token
 
-Agora você tem seu serviço rodando em [http://localhost:8000](http://localhost:8000)
-
-
-## Documentação
-
-Com o serviço instanciado em sua máquina, basta acessar [http://localhost:8000/docs](http://localhost:8000/docs)
+Now it's running at [http://localhost:8000](http://localhost:8000)
 
 
-## Rodando os testes
+## Documentation
+
+With the service running you can access the documentation at [http://localhost:8000/docs](http://localhost:8000/docs)
+
+
+## Running tests
 
 ```bash
 $ make test
